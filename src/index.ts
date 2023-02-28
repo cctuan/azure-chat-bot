@@ -3,9 +3,12 @@ import * as line from '@line/bot-sdk';
 import * as dotenv from 'dotenv';
 import express from 'express'
 import { WebhookEvent } from "@line/bot-sdk";
-
+import firebaseAdmin from 'firebase-admin';
 
 dotenv.config();
+
+const FIREBASE_PROJECT_ID = process.env.FIREBASE_PROJECT_ID || ''
+const FIREBASE_DATABASE_URL = process.env.FIREBASE_DATABASE_URL || '';
 
 const CHANNEL_ACCESS_TOKEN = process.env.CHANNEL_ACCESS_TOKEN || '';
 const CHANNEL_SECRET = process.env.CHANNEL_SECRET || '';
@@ -18,8 +21,12 @@ const configuration = new Configuration({
 
 const openai = new OpenAIApi(configuration);
 
+firebaseAdmin.initializeApp({
+  projectId: FIREBASE_PROJECT_ID,
+  databaseURL: FIREBASE_DATABASE_URL,
+})
 
-
+const db = firebaseAdmin.database()
 const config = {
   channelAccessToken: CHANNEL_ACCESS_TOKEN,
   channelSecret: CHANNEL_SECRET,
@@ -51,6 +58,17 @@ async function handleEvent(event: WebhookEvent) {
 }
 
 app.get('/', (req, res) => {
+  const ref = db.ref('saving/ref/log')
+  console.log('test')
+  const userRef = ref.child('user')
+  userRef.set({
+    name: 'Alice',
+    age: 30
+  }).then(() => {
+    console.log('Document created successfully');
+  }).catch((error) => {
+    console.error('Error creating document:', error);
+  });
   res.status(200).end('ok');
 })
 app.listen(PORT, () => {
