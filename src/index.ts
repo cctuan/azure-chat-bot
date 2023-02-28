@@ -3,7 +3,7 @@ import * as line from '@line/bot-sdk';
 import * as dotenv from 'dotenv';
 import express from 'express'
 import { WebhookEvent } from "@line/bot-sdk";
-import firebaseAdmin from 'firebase-admin';
+import ConversationModel from "./conversationModel";
 
 dotenv.config();
 
@@ -20,13 +20,11 @@ const configuration = new Configuration({
 });
 
 const openai = new OpenAIApi(configuration);
-
-firebaseAdmin.initializeApp({
+const conversationModel = new ConversationModel({
   projectId: FIREBASE_PROJECT_ID,
   databaseURL: FIREBASE_DATABASE_URL,
 })
 
-const db = firebaseAdmin.database()
 const config = {
   channelAccessToken: CHANNEL_ACCESS_TOKEN,
   channelSecret: CHANNEL_SECRET,
@@ -58,17 +56,6 @@ async function handleEvent(event: WebhookEvent) {
 }
 
 app.get('/', (req, res) => {
-  const ref = db.ref('saving/ref/log')
-  console.log('test')
-  const userRef = ref.child('user')
-  userRef.set({
-    name: 'Alice',
-    age: 30
-  }).then(() => {
-    console.log('Document created successfully');
-  }).catch((error) => {
-    console.error('Error creating document:', error);
-  });
   res.status(200).end('ok');
 })
 app.listen(PORT, () => {
