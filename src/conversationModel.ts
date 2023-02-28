@@ -39,9 +39,9 @@ class ConversationModel {
     })
   }
 
-  async query({roomId = ''}) {
+  async query({roomId = ''}): Promise<{question: string, answer: string}> {
     return new Promise((resolve, reject) => {
-      this.db.ref(`roomId/${roomId}`).on('value', snapshot => {
+      this.db.ref(`room/${roomId}`).on('value', snapshot => {
         resolve(snapshot.val())
       }, errorObject => {
         reject(errorObject)
