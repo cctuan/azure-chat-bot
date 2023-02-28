@@ -160,9 +160,15 @@ async function handleEvent(event: WebhookEvent) {
     return handlePostBackEvent(event)
   }
 
-  if (event.type !== 'message' || event.message.type !== 'text') {
+  if (event.type !== 'message' || event.message.type !== 'text' ||
+    !event.message.emojis || event.message.emojis.length === 0) {
     return Promise.resolve(null);
   }
+
+  if (event.message.emojis[0].productId !=='5ac5d0ec040ab15980c9b4a6' || event.message.emojis[0].emojiId !== '001') {
+    return Promise.resolve(null);
+  }
+
   // @ts-ignore
   const rid = event.source.groupId || event.source.roomId || event.source.userId;
 
