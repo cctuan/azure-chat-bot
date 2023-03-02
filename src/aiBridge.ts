@@ -58,7 +58,7 @@ class AIBridge {
 
   async _askPrompt(text = '') {
     const completion = await this.client.createCompletion({
-      model: "text-davinci-003",
+      model: "gpt-3.5-turbo",
       prompt: text,
       max_tokens: 1040,
       temperature: 0.7,
