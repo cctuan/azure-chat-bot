@@ -57,17 +57,23 @@ class AIBridge {
   }
 
   async _askPrompt(text = '') {
-    const completion = await this.client.createCompletion({
-      model: "gpt-3.5-turbo",
-      prompt: text,
-      max_tokens: 1040,
-      temperature: 0.7,
-      top_p: 1,
-      best_of: 1,
-      frequency_penalty: 0,
-      presence_penalty: 0
-    });
-    return completion.data.choices[0].text
+    try {
+      const completion = await this.client.createChatCompletion({
+        model: "gpt-3.5-turbo",
+        messages: [{content: text, role: 'user'}],
+        max_tokens: 1040,
+        temperature: 0.7,
+        top_p: 1,
+        frequency_penalty: 0,
+        presence_penalty: 0
+      });
+      if (completion && completion.data && completion.data.choices.length && completion.data.choices[0].message?.content) {
+        return completion.data.choices[0].message.content
+      }
+    } catch (error) {
+      console.error(error);
+    }
+    return '目前沒回應'
   }
 }
 export default AIBridge;
