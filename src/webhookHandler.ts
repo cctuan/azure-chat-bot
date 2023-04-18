@@ -1,6 +1,6 @@
 import { WebhookEvent } from "@line/bot-sdk";
 import weaviate, { WeaviateClient } from 'weaviate-ts-client';
-
+import { Request, Response } from 'express'
 // const WEAVIATE_HOST = process.env.WEAVIATE_HOST || '';
 
 // const weaviateClient: WeaviateClient = weaviate.client({
@@ -8,7 +8,7 @@ import weaviate, { WeaviateClient } from 'weaviate-ts-client';
 //   host: WEAVIATE_HOST,  // Replace with your endpoint
 // });
 
-function main(req, res, next) {
+function main(req: Request, res: Response): void {
   res.status(200).end();
   try {
     Promise.all(req.body.events.map(handleEvent));
